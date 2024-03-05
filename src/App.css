@@ -1,3 +1,63 @@
+html{
+ overflow: hidden; 
+ background: #383e56; 
+}
+.color-white{
+  color:#eedad1;
+}
+.color-orange{
+  color:orange;
+}
+.color-green{
+  color:rgb(0, 255, 0)
+}
+.color-red{
+  color: red;
+}
+.card{
+  background: #383e56!important; 
+  color:#eedad1;
+  box-shadow: none;
+  font-family: Inconsolata,monospace;
+  font-weight: 800;
+}
+.control{
+  top:-9em;
+  z-index:-1;
+}
+
+.content{
+  word-spacing: 5px;
+  overflow-y: hidden;
+  height:108px;
+  text-align: left;
+  
+}
+
+/* Add this CSS in your App.css or your preferred stylesheet */
+
+.cursor {
+  font-size: 1em; /* Set the font size of the cursor */
+  display: inline-block;
+  width: 5em; /* Set the width of the cursor */
+  height: 1em; /* Set the height of the cursor */
+  margin-left: 2px; /* Adjust the margin as needed */
+  vertical-align: middle;
+}
+
+.cursor-blink {
+  animation: blink-animation 0.8s infinite;
+}
+
+@keyframes blink-animation {
+  0%, 50% {
+    opacity: 0;
+  }
+  51%, 100% {
+    opacity: 1;
+  }
+}
+
 .App {
   text-align: center;
 }

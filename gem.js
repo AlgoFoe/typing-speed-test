@@ -16,8 +16,6 @@ function App() {
   const [status,setStatus] = useState("wait");
   const focusInput = useRef(null);
 
-  const [wordsCorrectness, setWordsCorrectness] = useState([]);
-
   useEffect(()=>{
     document.addEventListener('keydown',e=>{
         if(e.key==='Tab'){
@@ -68,22 +66,23 @@ function App() {
   const handleKeyPress = ({ keyCode, key }) => {
     // key code = 32 for space bar
     if (keyCode === 32) {
-      if (currCharIndex >= 0 || currInput.trim() !== '') {
-        matchWord();
-        setCurrInput('');
-        setCurrCharIndex(-1);
-      }
-      
+      matchWord();
+      setCurrInput('');
       setCurrIndex(currIndex + 1);
-  
+      setCurrCharIndex(-1);
+
       // Check if the last word of the line is typed
+      words.slice(
+        currIndex - (currIndex % 10),
+        currIndex+1
+      );
       const isLastWordOfLine = currIndex % 10 === 8;
       if (isLastWordOfLine) {
-        const lineIndex = Math.floor(currIndex / 10) + 1;
+        const lineIndex = Math.floor(currIndex / 10)+1;
         const lastLineElement = document.querySelector(`.line-${lineIndex}`);
         lastLineElement && lastLineElement.scrollIntoView({ block: 'end', behavior: 'smooth' });
       }
-    } else if (keyCode === 8) {
+    }else if (keyCode === 8) {
       setCurrCharIndex(currCharIndex - 1);
       setCurrChar('');
     } else {
@@ -91,43 +90,36 @@ function App() {
       setCurrChar(key);
     }
   };
-   
-  const matchWord = () => {
-    const wordToCompare = words[currIndex];
-    const isMatching = wordToCompare === currInput.trim();
-    const currentWordCorrectness = currInput.trim().split('').map((char, index) => char === wordToCompare[index]);
-    
-    // Update wordsCorrectness state with the correctness of the current word
-    setWordsCorrectness((prev) => [...prev, currentWordCorrectness]);
   
-    if (isMatching) {
-      setCorrect(correct + 1);
-    } else {
-      setIncorrect(incorrect + 1);
+  const matchWord=()=>{
+    const wordToCompare = words[currIndex]
+    const isMatching = wordToCompare===currInput.trim()
+    if(isMatching){
+      setCorrect(correct+1)
     }
-    console.log(isMatching)
-  };
-  
+    else{
+      setIncorrect(incorrect+1)
+    }
+    // console.log(isMatching)
+  } 
 
-  const getClass = (wordIndex, charIndex, char) => {
-    if (wordIndex < currIndex) {
-      // For words that have already been typed, using wordsCorrectness to determine color
-      const correctness = wordsCorrectness[wordIndex];
-      return correctness[charIndex] ? "color-green" : "color-red";
-    } else if (wordIndex === currIndex) {
-      // Prevent coloring the first character of the new word incorrectly
-      if (currInput.length === 0) {
-        return ""; // No coloring for the first character if no input yet
+  const getClass=(wordIndex,charIndex,char)=>{
+    if(wordIndex===currIndex && charIndex===currCharIndex && currChar && status!=="completed" ){
+      if(char===currChar){
+        // return "has-text-success-dark"
+        return "color-green "
       }
-      if (charIndex < currInput.length) {
-        // For the current word being typed, apply coloring based on current input
-        return char === currInput[charIndex] ? "color-green" : "has-background-danger-dark";
+      else{
+        return "has-background-danger-dark"
       }
     }
-    // Default case, no specific coloring
-    return "";
-  };
-  
+    else if(wordIndex===currIndex && currCharIndex >= words[currIndex].length){
+      return "has-background-danger-dark"
+    }
+    else{
+      return ""
+    }
+  }
   const getLines = () => {
     return words.reduce((acc, word, index) => {
       const lineIndex = Math.floor(index / 10); // Assuming 10 words per line
